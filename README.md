@@ -11,9 +11,9 @@ When given 100 purchase intents across the Shopify catalog, a Shopify MCP-equipp
 | File | Description |
 |------|-------------|
 | [`intents.md`](intents.md) | The 100 taxonomy-aligned purchase intents, graded by difficulty (easy / medium / hard), with full change log documenting how each intent was adapted to use Shopify taxonomy attributes |
-| [`shopify-agent-results.md`](shopify-agent-results.md) | Full results for the Shopify MCP control agent: all 66 found products verified against catalog data, with 19 false positives identified and categorized |
+| [`shopify-agent-results.md`](shopify-agent-results.md) | Full results for the Shopify MCP control agent: all 66 found products verified against catalog data, with 19 errors identified and categorized |
 | [`mandate-results.md`](mandate-results.md) | Full results for the delta Mandate agent across all 100 intents, showing per-intent verification evidence and pass/fail/error status |
-| [`comparison-analysis.md`](comparison-analysis.md) | Side-by-side comparison: confusion matrix, false positive and false negative analysis, discovery vs enforcement distinction, and the 14 disagreement cases |
+| [`comparison-analysis.md`](comparison-analysis.md) | Side-by-side comparison: confusion matrix, error analysis, discovery vs enforcement distinction, and the 14 disagreement cases |
 
 ## Methodology
 
@@ -23,23 +23,37 @@ When given 100 purchase intents across the Shopify catalog, a Shopify MCP-equipp
 - The delta Mandate agent additionally ran a policy engine that verifies each candidate product's extracted evidence against the user's constraints before allowing purchase
 - Both agents were instructed to pass if no suitable product was found, rather than picking a product that doesn't fit
 
-## Key definitions
+## Results
 
-- **False positive (FP):** the agent bought a product that violated one or more constraints. This is the dangerous failure — real money spent on the wrong thing.
-- **False negative (FN):** the agent passed on a purchase that was actually valid — a discovery failure, not a safety failure.
+### Confusion matrix
 
-## Results summary
-
-| Metric | Shopify MCP agent | delta Mandate agent |
+|  | Shopify MCP agent | delta Mandate agent |
 |--------|-------------------|---------------------|
-| True positives (valid purchase) | 47 | 56 |
-| True negatives (correct pass) | 23 | 44 |
-| **False positives** | **19** | **0** |
-| **False negatives** | **11** | **0** |
-| **False positive rate** | **28.8%** | **0.0%** |
-| FP rate on hard intents (5+ constraints) | 71.4% | 0.0% |
+| **True positive** (valid product found and purchased) | 47 | 56 |
+| **True negative** (no valid product exists, correctly passed) | 23 | 44 |
+| **False positive** (purchased a product that violated constraints) | 19 | 0 |
+| **False negative** (passed when a valid product existed) | 11 | 0 |
+| **Total** | 100 | 100 |
 
-Every Shopify agent false positive was a case where the agent asserted a constraint was satisfied without evidence in the catalog data — either the attribute was absent entirely (14 cases) or the agent used product-type intuition rather than extracting explicit evidence (5 cases).
+### Error rates
+
+Two metrics matter, and the Shopify agent fails on both:
+
+| Metric | Formula | Shopify agent | delta Mandate |
+|--------|---------|---------------|---------------|
+| **Purchase error rate** | FP / (TP + FP) | **28.8%** (19/66) | **0.0%** (0/56) |
+| **False positive rate** | FP / (FP + TN) | **45.2%** (19/42) | **0.0%** (0/44) |
+
+- **Purchase error rate** (false discovery rate): of the products the agent claimed to find, what fraction were wrong. This is the metric that matters to the user — 28.8% of the time the agent said "I found it," the purchase violated at least one constraint.
+- **False positive rate**: of the cases where no valid purchase should have been made, what fraction did the agent wrongly make. Statistically rigorous but less intuitive for this use case.
+
+On hard intents (5+ constraints), the purchase error rate hit **71.4%**.
+
+### What the Shopify agent got wrong
+
+Every false positive was a case where the agent asserted a constraint was satisfied without evidence in the catalog data:
+- **14 cases:** the constraint wasn't present anywhere in the product data. The agent claimed it was satisfied anyway.
+- **5 cases:** the agent used product-type intuition ("stainless steel is inherently dishwasher safe") rather than extracting explicit evidence from the catalog.
 
 ## About delta Mandate
 
