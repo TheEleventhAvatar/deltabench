@@ -11,7 +11,7 @@ When given 100 purchase intents across the Shopify catalog, a Shopify UCP CLI-eq
 | File | Description |
 |------|-------------|
 | [`intents.md`](intents.md) | The 100 taxonomy-aligned purchase intents, graded by difficulty (easy / medium / hard), with full change log documenting how each intent was adapted to use Shopify taxonomy attributes |
-| [`shopify-agent-results.md`](shopify-agent-results.md) | Full results for the Shopify MCP control agent: all 66 found products verified against catalog data, with 19 errors identified and categorized |
+| [`shopify-agent-results.md`](shopify-agent-results.md) | Full results for the Shopify CLI control agent: all 66 found products verified against catalog data, with 19 errors identified and categorized |
 | [`mandate-results.md`](mandate-results.md) | Full results for the delta Mandate agent across all 100 intents, showing per-intent verification evidence and pass/fail/error status |
 | [`comparison-analysis.md`](comparison-analysis.md) | Side-by-side comparison: confusion matrix, error analysis, discovery vs enforcement distinction, and the 14 disagreement cases |
 
@@ -19,7 +19,7 @@ When given 100 purchase intents across the Shopify catalog, a Shopify UCP CLI-eq
 
 - **100 purchase intents** generated to span the full range of difficulty, from single-constraint lookups ("Bamboo cutting board, under $30") to multi-constraint combinations that may not exist ("Leather journal cover, solid pattern, not black, under $60, with elastic closure, leather book cover material")
 - Every constraint mapped to a Shopify product taxonomy attribute (see change log in `intents.md`)
-- Both agents used Shopify's MCP (Merchant Tools Protocol + UCP catalog search) for product discovery
+- Both agents used Shopify's UCP CLI (Merchant Tools Protocol + UCP catalog search) for product discovery
 - The delta Mandate agent additionally ran a policy engine that verifies each candidate product's extracted evidence against the user's constraints before allowing purchase
 - Both agents were instructed to pass if no suitable product was found, rather than picking a product that doesn't fit
 
