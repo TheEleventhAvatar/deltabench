@@ -1,0 +1,15 @@
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# Benchmark results
+results/
+
+# Test scripts (one-off diagnostics)
+test-*.js
+test-*.ts
+
+# IDE
+.kilocode/
