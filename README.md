@@ -1,10 +1,102 @@
-# DeltaBench - Replay & Execution Trace Subsystem
+# DeltaBench
 
-Production-quality immutable execution trace system for Delta MCP benchmarks. Every benchmark execution becomes reproducible through complete trace recording and replay.
+Replayable benchmarking framework for evaluating AI agent workflows against real MCP servers.
 
-## Core Principle
+DeltaBench executes complete intent → policy → verification pipelines, records immutable execution traces, and provides replay, failure analysis, timeline visualization, and artifact generation for every run.
 
-**NEVER fabricate or infer execution data.** This system only records what was actually returned by the Delta MCP. If the MCP does not expose a piece of information, it is recorded as `null` or "unavailable".
+Designed for engineering teams building and evaluating MCP-based systems.
+
+---
+
+## Features
+
+- Execute benchmarks against real MCP servers
+- Immutable JSONL execution traces
+- Replay any execution step-by-step
+- Timeline visualization
+- Failure explorer
+- Trace search with filters
+- Artifact export (trace, metrics, reports)
+- Live benchmarking against Delta Mandate MCP
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/TheEleventhAvatar/deltabench.git
+
+cd deltabench
+
+npm install
+
+npm run build
+```
+
+Run a benchmark:
+
+```bash
+npm start -- run --prompt-id 001 --mcp-token <token>
+```
+
+Replay it:
+
+```bash
+npm start -- replay run-001
+```
+
+Inspect failures:
+
+```bash
+npm start -- failures
+```
+
+Search traces:
+
+```bash
+npm start -- trace search --tool submit_policy
+```
+
+---
+
+## Example
+
+```text
+$ npm start -- run --prompt-id 001
+
+✓ get_language_guide     812ms
+✓ search_taxonomy       1421ms
+✓ submit_policy          291ms
+✗ search_product        UCP CLI unavailable
+
+Trace written:
+results/traces/run-001.jsonl
+
+Artifacts:
+results/artifacts/run-001/
+```
+
+---
+
+## Output
+
+Each benchmark generates:
+
+```
+results/
+├── traces/
+│   └── run-001.jsonl
+└── artifacts/
+    └── run-001/
+        ├── prompt.json
+        ├── trace.jsonl
+        ├── metrics.json
+        └── report.md
+```
+
+Every recorded value comes directly from the MCP response. DeltaBench never fabricates or infers execution data.
+
+---
 
 ## Architecture
 
